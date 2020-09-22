@@ -57,6 +57,7 @@ type Stream struct {
 // Audio is to be streamed
 type Audio struct {
 	Data             io.Reader
+	ID               int64
 	Artist, Title    string
 	OverrideEncoding string
 }
