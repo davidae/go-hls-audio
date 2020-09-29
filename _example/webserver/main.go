@@ -68,13 +68,17 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 }
 
 func startHLS(rootDir string) error {
-	s := hls.NewStream(
+	s, err := hls.NewStream(
 		[]string{"128k", "64k"},
 		hls.WithMasterPlaylistName("master.m3u8"),
 		hls.WithPlaylistName(filepath.Join(rootDir, "hls/stream-%v/playlist.m3u8")),
 		hls.WithSegmentFilename(filepath.Join(rootDir, "hls/stream-%v/segment-%06d.ts")),
 		hls.WithDebug(),
 	)
+	if err != nil {
+		panic(err)
+	}
+
 	song, err := os.Open("song.mp3")
 	if err != nil {
 		panic(err)

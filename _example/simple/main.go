@@ -9,7 +9,11 @@ import (
 )
 
 func main() {
-	s := hls.NewStream([]string{"128k", "64k"}, hls.WithDebug())
+	s, err := hls.NewStream([]string{"128k", "64k"}, hls.WithDebug())
+	if err != nil {
+		panic(err)
+	}
+
 	song, err := os.Open("song.mp3")
 	if err != nil {
 		panic(err)
