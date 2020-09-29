@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -28,7 +29,7 @@ const (
 	// DefaultPlaylistName is the default output name for ffmpeg
 	DefaultPlaylistName = "hls-%v/hls-playlist.m3u8"
 	// DefaultMasterPlaylistName is the default master_pl_name for ffmpeg
-	DefaultMasterPlaylistName = "hls-master.m3u8"
+	DefaultMasterPlaylistName = "master.m3u8"
 	// DefaultDequeuedTimeout is the default read timeout for the dequeued notification channel
 	DefaultDequeuedTimeout = time.Second
 	// DefaultIsDebugging is the default debugging option
@@ -67,7 +68,7 @@ func (a Audio) String() string {
 }
 
 // NewStream initializes and returns a Stream
-func NewStream(bitrates []string, opts ...StreamOption) *Stream {
+func NewStream(bitrates []string, opts ...StreamOption) (Stream, error) {
 	s := &Stream{
 		bitrates: bitrates,
 
@@ -91,7 +92,11 @@ func NewStream(bitrates []string, opts ...StreamOption) *Stream {
 		o(s)
 	}
 
-	return s
+	if filepath.Dir(s.masterPlaylistName) != "." {
+		return Stream{}, errors.New("master playlist cannot have a directory, it must be root. ffmpeg limitation")
+	}
+
+	return *s, nil
 }
 
 // Append will append an Audio in the back of the queue, it will to be streamed
