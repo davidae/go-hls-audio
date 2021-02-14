@@ -60,6 +60,7 @@ type Audio struct {
 	Data             io.Reader
 	ID               int64
 	Artist, Title    string
+	Metadata         map[string]string
 	OverrideEncoding string
 }
 
@@ -174,7 +175,7 @@ func (s *Stream) execFFmpeg() error {
 		cmd.Stdin = a.Data
 		out, err := cmd.CombinedOutput()
 		if err != nil {
-			return fmt.Errorf("%s: %w", string(out), err)
+			return fmt.Errorf("failed to processes audio %s in ffmpeg: %s: %w", a, string(out), err)
 		}
 
 		s.log("ffmpeg output: %s", string(out))
