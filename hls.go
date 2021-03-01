@@ -215,5 +215,5 @@ func (s Stream) log(str string, v ...interface{}) {
 }
 
 func defaultMetadataTitle(a Audio) string {
-	return a.Artist + " - " + a.Title
+	return a.String()
 }
