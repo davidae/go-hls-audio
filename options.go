@@ -48,3 +48,8 @@ func WithDequeuedTimeout(d time.Duration) StreamOption {
 func WithDebug() StreamOption {
 	return func(s *Stream) { s.isLogging = true }
 }
+
+// WithMetadataTitle sets the -metadata value in ffmpeg hls, as in "-metadata title=%s"
+func WithMetadataTitle(fn func(a Audio) string) StreamOption {
+	return func(s *Stream) { s.setMetadata = fn }
+}
