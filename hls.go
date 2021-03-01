@@ -48,6 +48,7 @@ type Stream struct {
 	masterPlaylistName string
 	dequeuedTimeout    time.Duration
 	isLogging          bool
+	setMetadata        func(Audio) string
 
 	queue    []Audio
 	dequeued chan Audio
@@ -82,6 +83,7 @@ func NewStream(bitrates []string, opts ...StreamOption) (Stream, error) {
 		masterPlaylistName: DefaultMasterPlaylistName,
 		dequeuedTimeout:    DefaultDequeuedTimeout,
 		isLogging:          DefaultIsDebugging,
+		setMetadata:        func(a Audio) string { return a.String() },
 
 		queue:    []Audio{},
 		dequeued: make(chan Audio),
@@ -165,7 +167,7 @@ func (s *Stream) execFFmpeg() error {
 		args = append(args, bitrateArgs...)
 		args = append(args, "-hls_time", hlsTime, "-hls_list_size", hlsSize)
 		args = append(args, "-hls_flags", "append_list+delete_segments+omit_endlist")
-		args = append(args, "-metadata", "title="+a.String())
+		args = append(args, "-metadata", "title="+s.setMetadata(a))
 		args = append(args, "-master_pl_name", s.masterPlaylistName)
 		args = append(args, "-hls_segment_filename", s.segmentFilename, s.playlistName)
 
