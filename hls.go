@@ -83,7 +83,7 @@ func NewStream(bitrates []string, opts ...StreamOption) (Stream, error) {
 		masterPlaylistName: DefaultMasterPlaylistName,
 		dequeuedTimeout:    DefaultDequeuedTimeout,
 		isLogging:          DefaultIsDebugging,
-		setMetadata:        defaultMetadataTitle,
+		setMetadata:        func(a Audio) string { return a.String() },
 
 		queue:    []Audio{},
 		dequeued: make(chan Audio),
@@ -212,8 +212,4 @@ func (s Stream) log(str string, v ...interface{}) {
 	if s.isLogging {
 		log.Println(fmt.Sprintf("hls-audio: %s", fmt.Sprintf(str, v...)))
 	}
-}
-
-func defaultMetadataTitle(a Audio) string {
-	return a.String()
 }
